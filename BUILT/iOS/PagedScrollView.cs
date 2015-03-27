@@ -58,6 +58,21 @@ namespace BUILT
             applyScrollViewConstraints();
         }
 
+        protected virtual void configureScrollView(UIScrollView scrollView)
+        {
+            scrollView.Bounces = true;
+            scrollView.PagingEnabled = true;
+            scrollView.ShowsVerticalScrollIndicator = false;
+            scrollView.ShowsHorizontalScrollIndicator = false;
+        }
+
+        public void AddPageview(UIView view)
+        {
+            view.TranslatesAutoresizingMaskIntoConstraints = false;
+            pageQueue.Add(view);
+            SetNeedsUpdateConstraints();
+        }
+
         public override void UpdateConstraints()
         {
             if (pageQueue.Count > 0)
@@ -76,7 +91,6 @@ namespace BUILT
 
             var h1 = NSLayoutConstraint.FromVisualFormat("H:|[ScrollView]|", 0, null, names);
             var v1 = NSLayoutConstraint.FromVisualFormat("V:|[ScrollView]|", 0, null, names);
-
 
             AddConstraints(h1);
             AddConstraints(v1);
@@ -113,6 +127,11 @@ namespace BUILT
                 
                 updateContentViewForVerticalDirection();
             }
+                
+            ContentView.LayoutIfNeeded();
+            var b1 = ContentView.Bounds;
+
+            ScrollView.ContentSize = new CGSize (ContentView.Bounds.Width, ContentView.Bounds.Height);
         }
 
         protected void applyInitialWidthContentViewConstraint()
@@ -149,41 +168,36 @@ namespace BUILT
         {
             var children = ContentView.Subviews;
             var count = children.Length == 0 ? 1 : children.Length;
-            var width = count * Bounds.Width;
-            var height = Bounds.Height;
 
             ContentViewWidth = NSLayoutConstraint.Create(
                 view1: ContentView,
                 attribute1: NSLayoutAttribute.Width,
                 relation: NSLayoutRelation.Equal,
-                view2: null,
-                attribute2: NSLayoutAttribute.NoAttribute,
-                constant: width,
-                multiplier: 1
+                view2: this,
+                attribute2: NSLayoutAttribute.Width,
+                constant: 0,
+                multiplier: count
             );
 
             AddConstraint(ContentViewWidth);
-            ScrollView.ContentSize = new CGSize (width, height);
         }
 
         protected void updateContentViewForVerticalDirection()
         {
-            
-        }
+            var children = ContentView.Subviews;
+            var count = children.Length == 0 ? 1 : children.Length;
 
-        protected virtual void configureScrollView(UIScrollView scrollView)
-        {
-            scrollView.Bounces = false;
-            scrollView.PagingEnabled = true;
-            scrollView.ShowsVerticalScrollIndicator = false;
-            scrollView.ShowsHorizontalScrollIndicator = false;
-        }
+            ContentViewHeight = NSLayoutConstraint.Create(
+                view1: ContentView,
+                attribute1: NSLayoutAttribute.Height,
+                relation: NSLayoutRelation.Equal,
+                view2: this,
+                attribute2: NSLayoutAttribute.Height,
+                constant: 0,
+                multiplier: count
+            );
 
-        public void AddPageview(UIView view)
-        {
-            view.TranslatesAutoresizingMaskIntoConstraints = false;
-            pageQueue.Add(view);
-            SetNeedsUpdateConstraints();
+            AddConstraint(ContentViewHeight);
         }
 
         protected void applyPageConstraints()
@@ -195,15 +209,16 @@ namespace BUILT
                 applyPageConstraintsForHorizontalDirection();
         }
 
-        protected NSLayoutConstraint[] createInitialiHorizontalConstraints(UIView view)
+        protected NSLayoutConstraint[] createInitialHorizontalConstraints(UIView view)
         {
             var width = Bounds.Width;
             var names = NSDictionary.FromObjectsAndKeys(
                             new NSObject[] { view },
                             new NSObject[] { new NSString ("view") }
                         );
-
-            var h1 = NSLayoutConstraint.FromVisualFormat(string.Format("H:|[view({0})]", width), 0, null, names);
+                
+            
+            var h1 = NSLayoutConstraint.FromVisualFormat("H:|[view]", 0, null, names);
             var v1 = NSLayoutConstraint.FromVisualFormat("V:|[view]|", 0, null, names);
 
             var results = new NSLayoutConstraint[h1.Length + v1.Length];
@@ -221,7 +236,7 @@ namespace BUILT
                             new NSObject[] { new NSString ("previous"), new NSString ("view") }
                         );
 
-            var h1 = NSLayoutConstraint.FromVisualFormat(string.Format("H:[previous({0})][view({0})]", width), 0, null, names);
+            var h1 = NSLayoutConstraint.FromVisualFormat("H:[previous][view]", 0, null, names);
             var v1 = NSLayoutConstraint.FromVisualFormat("V:|[view]|", 0, null, names);
 
             var results = new NSLayoutConstraint[h1.Length + v1.Length];
@@ -231,6 +246,29 @@ namespace BUILT
             return results;
         }
 
+        protected NSLayoutConstraint createPageWidthConstraint(UIView view)
+        {
+            return  NSLayoutConstraint.Create(
+                view1: view,
+                attribute1: NSLayoutAttribute.Width,
+                relation: NSLayoutRelation.Equal,
+                view2: this,
+                attribute2: NSLayoutAttribute.Width,
+                constant: 0,
+                multiplier: 1);
+        }
+
+        protected NSLayoutConstraint createPageHeightConstraint(UIView view)
+        {
+            return  NSLayoutConstraint.Create(
+                view1: view,
+                attribute1: NSLayoutAttribute.Height,
+                relation: NSLayoutRelation.Equal,
+                view2: this,
+                attribute2: NSLayoutAttribute.Height,
+                constant: 0,
+                multiplier: 1);
+        }
 
         protected void applyPageConstraintsForHorizontalDirection()
         {
@@ -243,12 +281,14 @@ namespace BUILT
 
                     if (i == 0)
                     {
-                        ContentView.AddConstraints(createInitialiHorizontalConstraints(view));
+                        AddConstraint(createPageWidthConstraint(view));
+                        ContentView.AddConstraints(createInitialHorizontalConstraints(view));
                     }
                     else
                     {
                         var previous = ContentView.Subviews [i - 1];
                         var c = createAdditionalHorizontalConstraints(previous, view);
+                        AddConstraint(createPageWidthConstraint(view));
                         ContentView.AddConstraints(c);
                     }
                 }
@@ -262,6 +302,7 @@ namespace BUILT
                     ContentView.AddSubview(view);
 
                     var previous = ContentView.Subviews [baseIndex + i];
+                    AddConstraint(createPageWidthConstraint(view));
                     ContentView.AddConstraints(createAdditionalHorizontalConstraints(previous, view));
                 }
             }
