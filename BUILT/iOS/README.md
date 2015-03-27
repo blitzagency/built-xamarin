@@ -24,6 +24,7 @@ public override void ViewDidLoad()
 }
 
 
+// assumes and IBAction was assigned.
 partial void wantsAddRedController(Foundation.NSObject sender)
 {
     if (RedController == null)
