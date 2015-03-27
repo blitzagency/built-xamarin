@@ -5,11 +5,11 @@ using UIKit;
 
 namespace BUILT.iOS
 {
-    public abstract class ModelTableViewCell<T>: UITableViewCell, IModel<T>
+    public abstract class UITableViewCell<T>: UITableViewCell, IModel<T>
     {
         public T Model { get; set; }
 
-        protected ModelTableViewCell(IntPtr handle) : base(handle)
+        protected UITableViewCell(IntPtr handle) : base(handle)
         {
         
         }

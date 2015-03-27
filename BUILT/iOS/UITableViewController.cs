@@ -15,7 +15,7 @@ namespace BUILT.iOS
         public T Model { get; set; }
     }
 
-    public abstract class ModelTableViewController<T>: UITableViewController
+    public abstract class UITableViewController<T>: UITableViewController
     {
         Type _cellType;
 
@@ -43,7 +43,7 @@ namespace BUILT.iOS
 
             set {
                 
-                if (value.IsSubclassOf(typeof(ModelTableViewCell<T>)))
+                if (value.IsSubclassOf(typeof(UITableViewCell<T>)))
                 {
                     _cellType = value;
                     return;
@@ -56,7 +56,7 @@ namespace BUILT.iOS
             } 
         }
 
-        protected ModelTableViewController(IntPtr handle) : base(handle)
+        protected UITableViewController(IntPtr handle) : base(handle)
         {
             
         }
@@ -73,9 +73,6 @@ namespace BUILT.iOS
         {
             if (Models == null)
                 Models = new List<T>();
-
-//            TableView.WeakDataSource = this;
-//            TableView.WeakDelegate = this;
 
             ReuseIdentifier = typeof(T).Name + "Cell";
         }
@@ -116,7 +113,7 @@ namespace BUILT.iOS
         [Export("tableView:cellForRowAtIndexPath:")]
         protected virtual UITableViewCell numberOfSectionsInTableView(UITableView tableView, NSIndexPath indexPath)
         {
-            var cell = TableView.DequeueReusableCell(ReuseIdentifier) as ModelTableViewCell<T>;
+            var cell = TableView.DequeueReusableCell(ReuseIdentifier) as UITableViewCell<T>;
             cell.Model = Models[indexPath.Row];
             return cell;
         }
@@ -143,7 +140,7 @@ namespace BUILT.iOS
         [Export("tableView:willDisplayCell:forRowAtIndexPath:")]
         protected void WillDisplayCell(UITableView tableView, UITableViewCell cell, NSIndexPath indexPath)
         {
-            var modelCell = cell as ModelTableViewCell<T>;
+            var modelCell = cell as UITableViewCell<T>;
             modelCell.CellWillDisplay(tableView, indexPath);
         }
 

@@ -9,10 +9,10 @@
     <Import_RootNamespace>BUILT</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)iOS\ModelTableViewController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Android\Test.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)iOS\ModelTableViewCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)iOS\UITableViewController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)iOS\UITableViewCell.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)iOS\" />
