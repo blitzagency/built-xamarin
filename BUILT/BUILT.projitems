@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)iOS\UITableViewController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)iOS\UITableViewCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)iOS\PagedScrollView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)iOS\" />
