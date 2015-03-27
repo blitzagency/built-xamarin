@@ -39,7 +39,7 @@ void addRedController()
 ```
 
 
-### UITableViewController<<T>> & UITableViewCell<<T>>
+### UITableViewController\<T\> & UITableViewCell\<T\>
 
 ```csharp
 
