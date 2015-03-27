@@ -54,6 +54,8 @@ namespace BUILT
 
             AddSubview(ScrollView);
             ScrollView.AddSubview(ContentView);
+
+            applyScrollViewConstraints();
         }
 
         public override void UpdateConstraints()
@@ -65,11 +67,35 @@ namespace BUILT
             base.UpdateConstraints();
         }
 
+        protected void applyScrollViewConstraints()
+        {
+            var names = NSDictionary.FromObjectsAndKeys(
+                            new NSObject[] { ScrollView },
+                            new NSObject[] { new NSString ("ScrollView") }
+                        );
+
+            var h1 = NSLayoutConstraint.FromVisualFormat("H:|[ScrollView]|", 0, null, names);
+            var v1 = NSLayoutConstraint.FromVisualFormat("V:|[ScrollView]|", 0, null, names);
+
+
+            AddConstraints(h1);
+            AddConstraints(v1);
+        }
+
         protected void updateContentViewConstraints()
         {
             if (Direction == LayoutDirection.Horizontal)
             {
-                if (ContentViewWidth != null)
+                // if the operational dimension is null
+                // it means we have never initialized this 
+                // view before. We will be calling updateContentViewFor{{direction}}Direction
+                // which produces that operational dimension constraint.
+                // so we apply the default opposite dimension, since we will be
+                // generating a new target dimension.
+
+                if (ContentViewWidth == null)
+                    applyInitialHeightContentViewConstraint();
+                else
                     RemoveConstraint(ContentViewWidth);
 
                 updateContentViewForHorizontalDirection();
@@ -77,7 +103,12 @@ namespace BUILT
 
             if (Direction == LayoutDirection.Vertical)
             {
-                if (ContentViewHeight != null)
+                // see note above for why we invoke the 
+                // opposite dimension here.
+
+                if (ContentViewHeight == null)
+                    applyInitialWidthContentViewConstraint();
+                else
                     RemoveConstraint(ContentViewHeight);
                 
                 updateContentViewForVerticalDirection();
@@ -101,17 +132,17 @@ namespace BUILT
 
         protected void applyInitialHeightContentViewConstraint()
         {
-            ContentViewWidth = NSLayoutConstraint.Create(
+            ContentViewHeight = NSLayoutConstraint.Create(
                 view1: ContentView,
-                attribute1: NSLayoutAttribute.Width,
+                attribute1: NSLayoutAttribute.Height,
                 relation: NSLayoutRelation.Equal,
                 view2: this,
-                attribute2: NSLayoutAttribute.Width,
+                attribute2: NSLayoutAttribute.Height,
                 constant: 0,
                 multiplier: 1
             );
 
-            AddConstraint(ContentViewWidth);
+            AddConstraint(ContentViewHeight);
         }
 
         protected void updateContentViewForHorizontalDirection()
@@ -148,57 +179,10 @@ namespace BUILT
             scrollView.ShowsHorizontalScrollIndicator = false;
         }
 
-        public override void LayoutSubviews()
-        {
-            ContentViewWidth = NSLayoutConstraint.Create(
-                view1: ContentView,
-                attribute1: NSLayoutAttribute.Width,
-                relation: NSLayoutRelation.Equal,
-                view2: this,
-                attribute2: NSLayoutAttribute.Width,
-                constant: 0,
-                multiplier: 1
-            );
-
-            ContentViewHeight = NSLayoutConstraint.Create(
-                view1: ContentView,
-                attribute1: NSLayoutAttribute.Height,
-                relation: NSLayoutRelation.Equal,
-                view2: this,
-                attribute2: NSLayoutAttribute.Height,
-                constant: 0,
-                multiplier: 1
-            );
-
-            var names = NSDictionary.FromObjectsAndKeys(
-                            new NSObject[] { ScrollView },
-                            new NSObject[] { new NSString ("ScrollView") }
-                        );
-                
-            var h1 = NSLayoutConstraint.FromVisualFormat("H:|[ScrollView]|", 0, null, names);
-            var v1 = NSLayoutConstraint.FromVisualFormat("V:|[ScrollView]|", 0, null, names);
-
-            //applyInitialWidthContentViewConstraint();
-            //applyInitialHeightContentViewConstraint();
-            AddConstraints(h1);
-            AddConstraints(v1);
-            AddConstraint(ContentViewWidth);
-            AddConstraint(ContentViewHeight);
-
-            base.LayoutSubviews();
-        }
-
         public void AddPageview(UIView view)
         {
             view.TranslatesAutoresizingMaskIntoConstraints = false;
             pageQueue.Add(view);
-
-//            if (Direction == LayoutDirection.Horizontal)
-//                RemoveConstraint(ContentViewWidth);
-//
-//            if (Direction == LayoutDirection.Vertical)
-//                RemoveConstraint(ContentViewHeight);
-
             SetNeedsUpdateConstraints();
         }
 
