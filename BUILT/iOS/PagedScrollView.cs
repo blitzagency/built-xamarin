@@ -17,20 +17,15 @@ namespace BUILT
     public class PagedScrollView: UIView
     {
         public UIView ContentView { get; private set; }
-
         public UIScrollView ScrollView { get; private set; }
-
         public LayoutDirection Direction { get; set; }
-
         NSLayoutConstraint ContentViewWidth { get; set; }
-
         NSLayoutConstraint ContentViewHeight { get; set; }
-
         List<UIView>pageQueue { get; set; }
 
         public PagedScrollView (IntPtr handle) : base(handle)
         {
-            
+
         }
 
         [Export("initWithCoder:")]
@@ -70,24 +65,48 @@ namespace BUILT
         {
             view.TranslatesAutoresizingMaskIntoConstraints = false;
             pageQueue.Add(view);
+
+
+            if (Direction == LayoutDirection.Horizontal && ContentViewWidth != null)
+                RemoveConstraint(ContentViewWidth);
+            else if (Direction == LayoutDirection.Vertical && ContentViewHeight != null)
+                RemoveConstraint(ContentViewHeight);
+            
             SetNeedsUpdateConstraints();
+            SetNeedsLayout();
         }
 
         public override void UpdateConstraints()
         {
+            base.UpdateConstraints();
+
             if (pageQueue.Count > 0)
                 applyPageConstraints();
 
             updateContentViewConstraints();
-            base.UpdateConstraints();
+
+        }
+
+        public override void LayoutSubviews()
+        {
+            base.LayoutSubviews();
+
+            // don't understand why ContentView has not been calculated here, 
+            // it's constraints are dependant on this view is all I can think of.
+            // to that end, we force it.
+            ContentView.LayoutIfNeeded();
+
+            var width = ContentView.Bounds.Width;
+            var height = ContentView.Bounds.Height;
+            ScrollView.ContentSize = new CGSize (width, height);
         }
 
         protected void applyScrollViewConstraints()
         {
             var names = NSDictionary.FromObjectsAndKeys(
-                            new NSObject[] { ScrollView },
-                            new NSObject[] { new NSString ("ScrollView") }
-                        );
+                new NSObject[] { ScrollView },
+                new NSObject[] { new NSString ("ScrollView") }
+            );
 
             var h1 = NSLayoutConstraint.FromVisualFormat("H:|[ScrollView]|", 0, null, names);
             var v1 = NSLayoutConstraint.FromVisualFormat("V:|[ScrollView]|", 0, null, names);
@@ -124,14 +143,9 @@ namespace BUILT
                     applyInitialWidthContentViewConstraint();
                 else
                     RemoveConstraint(ContentViewHeight);
-                
+
                 updateContentViewForVerticalDirection();
             }
-                
-            ContentView.LayoutIfNeeded();
-            var b1 = ContentView.Bounds;
-
-            ScrollView.ContentSize = new CGSize (ContentView.Bounds.Width, ContentView.Bounds.Height);
         }
 
         protected void applyInitialWidthContentViewConstraint()
@@ -213,11 +227,11 @@ namespace BUILT
         {
             var width = Bounds.Width;
             var names = NSDictionary.FromObjectsAndKeys(
-                            new NSObject[] { view },
-                            new NSObject[] { new NSString ("view") }
-                        );
-                
-            
+                new NSObject[] { view },
+                new NSObject[] { new NSString ("view") }
+            );
+
+
             var h1 = NSLayoutConstraint.FromVisualFormat("H:|[view]", 0, null, names);
             var v1 = NSLayoutConstraint.FromVisualFormat("V:|[view]|", 0, null, names);
 
@@ -232,9 +246,9 @@ namespace BUILT
         {
             var width = Bounds.Width;
             var names = NSDictionary.FromObjectsAndKeys(
-                            new NSObject[] { previous, view },
-                            new NSObject[] { new NSString ("previous"), new NSString ("view") }
-                        );
+                new NSObject[] { previous, view },
+                new NSObject[] { new NSString ("previous"), new NSString ("view") }
+            );
 
             var h1 = NSLayoutConstraint.FromVisualFormat("H:[previous][view]", 0, null, names);
             var v1 = NSLayoutConstraint.FromVisualFormat("V:|[view]|", 0, null, names);
@@ -312,7 +326,7 @@ namespace BUILT
 
         protected void applyPageConstraintsForVerticalDirection()
         {
-        
+
         }
 
     }
