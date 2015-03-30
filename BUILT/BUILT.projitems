@@ -14,6 +14,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)iOS\UITableViewController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)iOS\UITableViewCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)iOS\PagedScrollView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)iOS\MenuScrollView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)iOS\PagedMenuController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)iOS\" />
