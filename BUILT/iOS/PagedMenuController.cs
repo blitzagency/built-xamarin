@@ -18,6 +18,7 @@ namespace BUILT.iOS
         MenuScrollView _menuScrollView;
 
         CGPoint _lastPagedOffset = new CGPoint(0, 0);
+        CGPoint _lastMenuOffset = new CGPoint(0, 0);
         int _currentPageIndex = 0;
         bool _pagedViewIsEndingDragging = false;
         ScrollDirection _lastPagedDirection = ScrollDirection.Forward;
@@ -31,7 +32,7 @@ namespace BUILT.iOS
                 
                 _menuScrollView = value;
                 _menuScrollView.ScrollView.WeakDelegate = this;
-                _menuScrollView.ScrollView.ScrollEnabled = false;
+                //_menuScrollView.ScrollView.ScrollEnabled = false;
             }
         }
 
@@ -88,14 +89,16 @@ namespace BUILT.iOS
         {
             _lastPagedOffset = targetContentOffset;
             _pagedViewIsEndingDragging = true;
+            var nextIndex = (int)(targetContentOffset.X / PagedScrollView.Bounds.Width);
+
 
             var currentView = MenuScrollView.ContentView.Subviews [_currentPageIndex];
             var nextView = MenuScrollView.ContentView.Subviews [_currentPageIndex + (int)_lastPagedDirection];
             var distance = (currentView.Bounds.Width / 2) + MenuScrollView.Padding + (nextView.Bounds.Width / 2);
-            var ratio = distance / PagedScrollView.Bounds.Width;
-            var delta = targetContentOffset.X * ratio;
+            distance = _lastMenuOffset.X + ((int)_lastPagedDirection) * distance;
 
-            var point = new CGPoint (delta, 0);
+            var point = new CGPoint (distance , 0);
+            _lastMenuOffset = point;
 
             UIView.Animate(
                 duration: 0.35, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, 
@@ -103,14 +106,18 @@ namespace BUILT.iOS
                     MenuScrollView.ScrollView.ContentOffset = point;
             }, completion: null);
 
-            _currentPageIndex = (int)(targetContentOffset.X / PagedScrollView.Bounds.Width);
+            _currentPageIndex = nextIndex;
 
+            // this needs to be a delegate call
             currentView.Alpha = (nfloat)0.5;
             nextView.Alpha = 1;
         }
 
         protected void menuScrollViewWillEndDragging(UIScrollView scrollView, CGPoint velocity, ref CGPoint targetContentOffset)
         {
+            // 333.5 - ContentOffset
+            // origin {x: 428, y: 24.5}
+            // Size {width: 186, height: 20.5}
             Console.WriteLine("menuScrollViewWillEndDragging");
         }
 
@@ -121,7 +128,7 @@ namespace BUILT.iOS
 
         protected void menuScrollViewDidEndDecelerating(UIScrollView scrollView)
         {
-
+            
         }
 
         protected void pagedScrollViewDidScroll(UIScrollView scrollView)
@@ -137,19 +144,19 @@ namespace BUILT.iOS
                 direction = ScrollDirection.Backward;
 
             _lastPagedDirection = direction;
-            
-            var padding = MenuScrollView.Padding;
+
             var currentView = MenuScrollView.ContentView.Subviews [_currentPageIndex];
             var nextView = MenuScrollView.ContentView.Subviews [_currentPageIndex + (int)direction];
-            var distance = (currentView.Bounds.Width / 2) + padding + (nextView.Bounds.Width / 2);
+            var distance = (currentView.Bounds.Width / 2) + MenuScrollView.Padding + (nextView.Bounds.Width / 2);
 
+            var pageWidth = PagedScrollView.Bounds.Width;
             var offset = _lastPagedOffset = scrollView.ContentOffset;
-            var ratio = distance / PagedScrollView.Bounds.Width;
-            var delta = offset.X * ratio;
+            var ratio = distance / pageWidth;
 
-            MenuScrollView.ScrollView.ContentOffset = new CGPoint (delta, 0);
-            Console.WriteLine(delta);
+            var normalizedX = (offset.X - (pageWidth * _currentPageIndex));
+            var delta = normalizedX * ratio;
 
+            MenuScrollView.ScrollView.ContentOffset = new CGPoint ((delta + _lastMenuOffset.X), 0);
         }
 
         protected void menuScrollViewDidScroll(UIScrollView scrollView)

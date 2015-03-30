@@ -118,20 +118,6 @@ namespace BUILT.iOS
 
             AddConstraint(t1);
             AddConstraint(b1);
-
-//            var h1 = NSLayoutConstraint.Create(
-//                                view1: ContentView,
-//                                attribute1: NSLayoutAttribute.Height,
-//                                relation: NSLayoutRelation.Equal,
-//                                view2: this,
-//                attribute2: NSLayoutAttribute.Height,
-//                                constant: 0,
-//                                multiplier: 1
-//                            );
-
-//            AddConstraint(h1);
-
-
         }
 
         protected void applyScrollViewConstraints()
