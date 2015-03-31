@@ -3,7 +3,6 @@ using Foundation;
 using UIKit;
 using CoreGraphics;
 
-
 namespace BUILT.iOS
 {
     enum ScrollDirection {
@@ -32,7 +31,7 @@ namespace BUILT.iOS
                 
                 _menuScrollView = value;
                 _menuScrollView.ScrollView.WeakDelegate = this;
-                //_menuScrollView.ScrollView.ScrollEnabled = false;
+                _menuScrollView.ScrollView.ScrollEnabled = false;
             }
         }
 
@@ -87,6 +86,9 @@ namespace BUILT.iOS
 
         protected void pagedScrollViewWillEndDragging(UIScrollView scrollView, CGPoint velocity, ref CGPoint targetContentOffset)
         {
+            if (targetContentOffset.X == _lastPagedOffset.X)
+                return;
+
             // user as started moving forward or backward, then released causeing the page to spring back.
             if ((targetContentOffset.X/PagedScrollView.Bounds.Width) == _currentPageIndex)
             {
@@ -101,7 +103,7 @@ namespace BUILT.iOS
 
             var nextIndex = (int)(targetContentOffset.X / PagedScrollView.Bounds.Width);
             var currentView = MenuScrollView.ContentView.Subviews [_currentPageIndex];
-            var nextView = MenuScrollView.ContentView.Subviews [_currentPageIndex + (int)_lastPagedDirection];
+            var nextView = MenuScrollView.ContentView.Subviews [nextIndex];
             var distance = (currentView.Bounds.Width / 2) + MenuScrollView.Padding + (nextView.Bounds.Width / 2);
 
             distance = _lastMenuOffset.X + ((int)_lastPagedDirection) * distance;
@@ -159,29 +161,20 @@ namespace BUILT.iOS
 
             _lastPagedDirection = direction;
 
-            var nextIndex = _currentPageIndex + (int)direction;
-            nfloat distance;
+            var pageWidth = PagedScrollView.Bounds.Width;
 
+            var nextIndex = _currentPageIndex + (int)direction;
+            nextIndex = Math.Max(nextIndex, 0);
+            nextIndex = Math.Min(nextIndex, MenuScrollView.ContentView.Subviews.Length - 1);
 
             var currentView = MenuScrollView.ContentView.Subviews [_currentPageIndex];
+            var nextView = MenuScrollView.ContentView.Subviews [nextIndex];
+            var distance = (currentView.Bounds.Width / 2) + MenuScrollView.Padding + (nextView.Bounds.Width / 2);
 
-            if (nextIndex == -1)
-            {
-                var nextView = MenuScrollView.ContentView.Subviews [_currentPageIndex + 1];
-                distance = (currentView.Bounds.Width / 2) + MenuScrollView.Padding + (nextView.Bounds.Width / 2);
-            }
-            else
-            {
-                var nextView = nextIndex == -1 ? null : MenuScrollView.ContentView.Subviews [_currentPageIndex + (int)direction];
-                distance = (currentView.Bounds.Width / 2) + MenuScrollView.Padding + (nextView.Bounds.Width / 2);
-            }
-                
-            var pageWidth = PagedScrollView.Bounds.Width;
-            var offset = _lastPagedOffset = scrollView.ContentOffset;
-            var ratio = distance / pageWidth;
+            var normalizedOffsetX = scrollView.ContentOffset.X - (pageWidth * _currentPageIndex);
+            var normalizedPercentOffsetX = normalizedOffsetX / pageWidth;
 
-            var normalizedX = (offset.X - (pageWidth * _currentPageIndex));
-            var delta = normalizedX * ratio;
+            var delta = normalizedPercentOffsetX * distance;
 
             MenuScrollView.ScrollView.ContentOffset = new CGPoint ((delta + _lastMenuOffset.X), 0);
         }
