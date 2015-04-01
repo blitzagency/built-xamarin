@@ -17,6 +17,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)iOS\MenuScrollView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)iOS\PagedMenuController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)iOS\WatchKit\CountDownController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)iOS\WatchKit\CountUpController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)iOS\" />
