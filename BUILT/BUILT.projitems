@@ -18,10 +18,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)iOS\PagedMenuController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)iOS\WatchKit\CountDownController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)iOS\WatchKit\CountUpController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)iOS\Gestures\TouchGesture.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shared\Controllers\RangeController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)iOS\" />
     <Folder Include="$(MSBuildThisFileDirectory)Android\" />
     <Folder Include="$(MSBuildThisFileDirectory)iOS\WatchKit\" />
+    <Folder Include="$(MSBuildThisFileDirectory)iOS\Gestures\" />
+    <Folder Include="$(MSBuildThisFileDirectory)iOS\Controls\" />
+    <Folder Include="$(MSBuildThisFileDirectory)iOS\Utils\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Shared\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Shared\Controllers\" />
   </ItemGroup>
 </Project>
