@@ -8,32 +8,12 @@ using CoreGraphics;
 
 namespace BUILT.iOS
 {
-    public class CV: UIView
-    {
-        public CV(CGRect frame): base(frame)
-        {
-        
-        }
-
-        public override void LayoutSubviews()
-        {
-            base.LayoutSubviews();
-            var foo = 1;
-        }
-
-        public override void UpdateConstraints()
-        {
-            base.UpdateConstraints();
-            var foo = 1;
-        }
-    }
     [Register("MenuScrollView")]
     public class MenuScrollView : UIView
     {
         public int Padding { get; set; }
         public UIScrollView ScrollView { get; set;}
         public UIView ContentView { get; set;}
-
 
         NSLayoutConstraint ContentViewWidth { get; set; }
         List<UIView> queue { get; set;}
@@ -56,7 +36,7 @@ namespace BUILT.iOS
             Padding = 50;
 
             ScrollView = new UIScrollView (CGRect.Empty);
-            ContentView = new CV (CGRect.Empty);
+            ContentView = new UIView (CGRect.Empty);
             ContentView.BackgroundColor = UIColor.Red;
 
             ScrollView.TranslatesAutoresizingMaskIntoConstraints = false;
