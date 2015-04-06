@@ -122,19 +122,7 @@ namespace BUILT.iOS
         protected void DidSelectRow(UITableView tableView, NSIndexPath indexPath)
         {
             SelectedIndexPath = indexPath;
-            var index = indexPath.Row;
-            var eventHandler = RowSelection;
-
-            if (eventHandler != null)
-            {
-                var args = new RowSelectionEventArgs<T> {
-                    TableView = tableView,
-                    IndexPath = indexPath,
-                    Model = Models[index]
-                };
-                    
-                eventHandler(this, args);
-            }
+            OnRowSelection(tableView, indexPath);
         }
 
         [Export("tableView:willDisplayCell:forRowAtIndexPath:")]
@@ -142,6 +130,22 @@ namespace BUILT.iOS
         {
             var modelCell = cell as UITableViewCell<T>;
             modelCell.CellWillDisplay(tableView, indexPath);
+        }
+
+        protected virtual void OnRowSelection(UITableView tableView, NSIndexPath indexPath)
+        {
+            var eventHandler = RowSelection;
+
+            if (eventHandler != null)
+            {
+                var args = new RowSelectionEventArgs<T> {
+                    TableView = tableView,
+                    IndexPath = indexPath,
+                    Model = Models[indexPath.Row]
+                };
+
+                eventHandler(this, args);
+            }
         }
 
     }
