@@ -10,8 +10,8 @@ namespace BUILT.iOS.WatchKit
 
 	public class Marker : EventArgs
 	{
-		public float percent;
-		public float seconds;
+		public nfloat percent;
+		public nfloat seconds;
 		public string type;
 	}
 
@@ -21,8 +21,8 @@ namespace BUILT.iOS.WatchKit
 		private WKInterfaceTimer interfaceTimer;
 		private NSTimer timer;
 		private DateTime? startTime;
-		private float secondsPassed = 0;
-		private float duration;
+		private nfloat secondsPassed = 0;
+		private nfloat duration;
 		private Boolean isPlaying = false;
 		private List<Marker> markerList = new List<Marker> ();
 		private List<NSTimer> timerList;
@@ -32,7 +32,7 @@ namespace BUILT.iOS.WatchKit
 
 		public Boolean IsPlaying { get { return isPlaying; } }
 
-		public float TimeRemaining {
+		public nfloat TimeRemaining {
 			get {
 				if (startTime == null)
 				{
@@ -42,13 +42,13 @@ namespace BUILT.iOS.WatchKit
 				{
 					var now = DateTime.Now;
 					var delta = now.Subtract(Convert.ToDateTime(startTime));
-					float deltaSeconds = (float)delta.Seconds + (float)delta.Milliseconds / 1000;
+					nfloat deltaSeconds = (nfloat)delta.Seconds + (nfloat)delta.Milliseconds / 1000;
 					return duration - secondsPassed - deltaSeconds;
 				}
 			}
 		}
 
-		public CountDownController (WKInterfaceTimer _timer, float _duration = 0)
+		public CountDownController (WKInterfaceTimer _timer, nfloat _duration)
 		{
 			interfaceTimer = _timer;
 			duration = _duration;
@@ -118,16 +118,16 @@ namespace BUILT.iOS.WatchKit
 			}
 		}
 
-		public void AddMarkerBySeconds(float seconds)
+		public void AddMarkerAtSeconds(nfloat seconds)
 		{
 			var marker = new Marker ();
-			marker.percent = (float)seconds / (float)duration;
+			marker.percent = 1 - ((nfloat)seconds / (nfloat)duration);
 			marker.type = "seconds";
 			marker.seconds = seconds;
 			addMarker(marker);
 		}
 
-		public void AddMarkerByPercent(float percent)
+		public void AddMarkerAtPercent(nfloat percent)
 		{
 			var marker = new Marker ();
 			marker.percent = percent;
