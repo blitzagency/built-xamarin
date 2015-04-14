@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BUILT
+namespace BUILT.Shared
 {
     public interface IModel<T>
     {

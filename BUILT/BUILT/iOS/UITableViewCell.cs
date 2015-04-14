@@ -2,6 +2,7 @@
 using System;
 using Foundation;
 using UIKit;
+using BUILT.Shared;
 
 namespace BUILT.iOS
 {

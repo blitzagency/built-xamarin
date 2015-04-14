@@ -9,26 +9,25 @@
     <Import_RootNamespace>BUILT</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Android\Test.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)IModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)iOS\UITableViewController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)iOS\UITableViewCell.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)iOS\PagedScrollView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)iOS\MenuScrollView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)iOS\PagedMenuController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)iOS\WatchKit\CountDownController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)iOS\WatchKit\CountUpController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)iOS\Gestures\TouchGesture.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Shared\Controllers\RangeController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\Android\Test.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\Controls\HorizontalSliderController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\Controls\SliderController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\Gestures\TouchGesture.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\MenuScrollView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\PagedMenuController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\PagedScrollView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\UITableViewCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\UITableViewController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\WatchKit\CountDownController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\WatchKit\CountUpController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\Reactive\EventManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\Reactive\EventManagerEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\Reactive\IEventManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\Shared\Controllers\RangeController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\Shared\IModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\Reactive\ReactiveViewController.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)iOS\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Android\" />
-    <Folder Include="$(MSBuildThisFileDirectory)iOS\WatchKit\" />
-    <Folder Include="$(MSBuildThisFileDirectory)iOS\Gestures\" />
-    <Folder Include="$(MSBuildThisFileDirectory)iOS\Controls\" />
-    <Folder Include="$(MSBuildThisFileDirectory)iOS\Utils\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Shared\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Shared\Controllers\" />
+    <Folder Include="$(MSBuildThisFileDirectory)BUILT\" />
   </ItemGroup>
 </Project>

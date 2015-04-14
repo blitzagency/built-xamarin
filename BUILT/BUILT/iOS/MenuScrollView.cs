@@ -37,7 +37,7 @@ namespace BUILT.iOS
 
             ScrollView = new UIScrollView (CGRect.Empty);
             ContentView = new UIView (CGRect.Empty);
-            ContentView.BackgroundColor = UIColor.Red;
+            //ContentView.BackgroundColor = UIColor.Red;
 
             ScrollView.TranslatesAutoresizingMaskIntoConstraints = false;
             ContentView.TranslatesAutoresizingMaskIntoConstraints = false;
@@ -284,6 +284,8 @@ namespace BUILT.iOS
             var result = new NSLayoutConstraint[h1.Length + c1.Length];
             h1.CopyTo(result, 0);
             c1.CopyTo(result, h1.Length);
+
+            view.Alpha = (nfloat)0.25;
 
             return result;
         }

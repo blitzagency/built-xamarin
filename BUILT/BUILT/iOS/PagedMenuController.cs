@@ -117,7 +117,7 @@ namespace BUILT.iOS
             _currentPageIndex = nextIndex;
 
             // this needs to be a delegate call
-            currentView.Alpha = (nfloat)0.5;
+            currentView.Alpha = (nfloat)0.15;
             nextView.Alpha = 1;
         }
 

@@ -99,6 +99,8 @@ namespace BUILT
             var width = ContentView.Bounds.Width;
             var height = ContentView.Bounds.Height;
             ScrollView.ContentSize = new CGSize (width, height);
+
+            base.LayoutSubviews();
         }
 
         protected void applyScrollViewConstraints()
@@ -160,7 +162,18 @@ namespace BUILT
                 multiplier: 1
             );
 
+            var left = NSLayoutConstraint.Create(
+                view1: ContentView,
+                attribute1: NSLayoutAttribute.Left,
+                relation: NSLayoutRelation.Equal,
+                view2: ScrollView,
+                attribute2: NSLayoutAttribute.Left,
+                constant: 0,
+                multiplier: 1
+            );
+
             AddConstraint(ContentViewWidth);
+            AddConstraint(left);
         }
 
         protected void applyInitialHeightContentViewConstraint()
@@ -175,7 +188,29 @@ namespace BUILT
                 multiplier: 1
             );
 
+            var top = NSLayoutConstraint.Create(
+                view1: ContentView,
+                attribute1: NSLayoutAttribute.Top,
+                relation: NSLayoutRelation.Equal,
+                view2: this,
+                attribute2: NSLayoutAttribute.Top,
+                constant: 0,
+                multiplier: 1
+            );
+
+            var left = NSLayoutConstraint.Create(
+                view1: ContentView,
+                attribute1: NSLayoutAttribute.Left,
+                relation: NSLayoutRelation.Equal,
+                view2: ScrollView,
+                attribute2: NSLayoutAttribute.Left,
+                constant: 0,
+                multiplier: 1
+            );
+
             AddConstraint(ContentViewHeight);
+            AddConstraint(top);
+            AddConstraint(left);
         }
 
         protected void updateContentViewForHorizontalDirection()

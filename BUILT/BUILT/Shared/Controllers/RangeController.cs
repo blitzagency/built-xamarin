@@ -1,36 +1,37 @@
 ﻿using System;
+using System.NMath;
 using System.Linq;
 using System.Collections.Generic;
-
+using ReactiveUI;
 
 namespace BUILT.Shared.Controllers
 {
     public class RangeMarkerEventArgs : EventArgs
     {
-        public List<double> Markers { get; set; }
+        public List<nfloat> Markers { get; set; }
     }
 
     public class RangePositionEventArgs : EventArgs
     {
-        public double FromPosition {get; set;}
-        public double ToPosition {get; set;}
+        public nfloat FromPosition {get; set;}
+        public nfloat ToPosition {get; set;}
     }
 
-    public class RangeController
+    public class RangeController: ReactiveObject
     {
-        double _range = 0;
-        double _position = 0;
-        double _prevPosition = 0;
-        List<double> _markers;
+        nfloat _range = 0;
+        nfloat _position = 0;
+        nfloat _prevPosition = 0;
+        List<nfloat> _markers;
 
-        public double Min {get; set;}
-        public double Max {get; set;}
-        public double Steps { get; set; }
+        public nfloat Min {get; set;}
+        public nfloat Max {get; set;}
+        public nfloat Steps { get; set; }
 
         public event EventHandler<RangeMarkerEventArgs> MarkersReached;
         public event EventHandler<RangePositionEventArgs> PositionChanged;
 
-        public double Position { 
+        public nfloat Position { 
             get{
                 return _position;
             }
@@ -51,7 +52,7 @@ namespace BUILT.Shared.Controllers
             } 
         }
 
-        public double Value{
+        public nfloat Value{
             get{
                 return ValueForPosition(Position);
             }
@@ -67,21 +68,21 @@ namespace BUILT.Shared.Controllers
         {
         }
 
-        public RangeController (double min, double max)
+        public RangeController (nfloat min, nfloat max)
         {
-            _markers = new List<double>();
+            _markers = new List<nfloat>();
             Min = min;
             Max = max;
             computeRange();
         }
 
-        public double ValueForPosition(double position)
+        public nfloat ValueForPosition(nfloat position)
         {
-            var result = Math.Round(_range * NormalizedPosition(position));
+            var result = NMath.Round(_range * NormalizedPosition(position));
             return result;
         }
 
-        public double PositionForValue(double value)
+        public nfloat PositionForValue(nfloat value)
         {
             var position = value / _range;
             return NormalizedPosition(position);
@@ -89,21 +90,22 @@ namespace BUILT.Shared.Controllers
 
         void computeRange()
         {
-            _range = Math.Abs(Max - Min);
+            _range = NMath.Abs(Max - Min);
         }
             
-        public double NormalizedPosition(double value)
+        public nfloat NormalizedPosition(nfloat value)
         {
             var result = RoundPosition(BoundValue(Position, min: 0, max: 1));
             return result;
         }
 
-        public double RoundPosition(double position)
+        public nfloat RoundPosition(nfloat position)
         {
-            return Math.Round(Position * 10000.0) / 10000.0;
+            var multiplier = (nfloat)10000.0;
+            return NMath.Round(position * multiplier) / multiplier;
         }
 
-        public double BoundValue(double value, double min, double max)
+        public nfloat BoundValue(nfloat value, nfloat min, nfloat max)
         {
             var result = value;
 
@@ -114,7 +116,7 @@ namespace BUILT.Shared.Controllers
         }
 
         #region Events
-        protected virtual void OnMarkersReached(List<double> markers)
+        protected virtual void OnMarkersReached(List<nfloat> markers)
         {
             var eventHandler = MarkersReached;
 
@@ -128,7 +130,7 @@ namespace BUILT.Shared.Controllers
             }
         }
 
-        protected virtual void OnPositionChanged(double fromPosition, double toPosition)
+        protected virtual void OnPositionChanged(nfloat fromPosition, nfloat toPosition)
         {
             var eventHandler = PositionChanged;
 
@@ -145,20 +147,20 @@ namespace BUILT.Shared.Controllers
         #endregion
 
         #region Markers
-        public List<double> CheckMarkers(double prevPosition, double position)
+        public List<nfloat> CheckMarkers(nfloat prevPosition, nfloat position)
         {
-            var reached = new List<double> ();
+            var reached = new List<nfloat> ();
 
             // when incrementing we will omit the first index (0.0)
             // but include the last index (1.0)
-            Action<double> incremental = delegate (double marker) {
+            Action<nfloat> incremental = delegate (nfloat marker) {
                 var inbetween = (marker > _prevPosition && marker <= Position);
 
                 if (inbetween)
                     reached.Add(marker);
             };
 
-            Action<double> decremental = delegate(double marker) {
+            Action<nfloat> decremental = delegate(nfloat marker) {
                 var inbetween = (marker < _prevPosition && marker >= Position);
 
                 if (inbetween)
@@ -174,7 +176,7 @@ namespace BUILT.Shared.Controllers
             return reached;
         }
 
-        public List<double> AddMarkersForSteps(double steps) 
+        public List<nfloat> AddMarkersForSteps(nfloat steps) 
         {
             var markers = CreateMarkersForSteps(steps);
             AddMarkerPositions(markers.ToArray());
@@ -182,9 +184,9 @@ namespace BUILT.Shared.Controllers
             return markers;
         }
         
-        public List<double> CreateMarkersForSteps(double steps)
+        public List<nfloat> CreateMarkersForSteps(nfloat steps)
         {
-            var stepDelta = 1.0 / (steps - 1.0);
+            var stepDelta = (nfloat)(1.0 / (steps - 1.0));
 
             // trim it up.
             var max = (int)steps;
@@ -193,10 +195,10 @@ namespace BUILT.Shared.Controllers
             return markers.ToList();
         }
 
-        public void AddMarkerPositions(params double[] positions)
+        public void AddMarkerPositions(params nfloat[] positions)
         {
 
-            var set = new HashSet<double>(_markers);
+            var set = new HashSet<nfloat>(_markers);
            
             foreach(var each in positions)
                 set.Add(each);
