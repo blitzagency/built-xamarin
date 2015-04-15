@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>BUILT-Xamarin.Sources</id>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <title>BUILT For Xamarin</title>
     <authors>BLITZ, Adam Venturella, Dino Petrone</authors>
     <owners>Adam Venturella, Dino Petrone</owners>
@@ -19,6 +19,6 @@
     </dependencies>
   </metadata>
   <files>
-      <file src="BUILT\**\*.*" exclude="**\*.log" />
+      <file src="BUILT\**\*.*" exclude="**\*.log" target="content/vendor/BUILT" />
   </files>
 </package>
