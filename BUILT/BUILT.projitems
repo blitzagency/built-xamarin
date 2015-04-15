@@ -26,8 +26,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)BUILT\Shared\Controllers\RangeController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BUILT\Shared\IModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\Reactive\ReactiveViewController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\Reactive\ReactiveTableView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\Events\RowSelection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)BUILT\" />
+    <Folder Include="$(MSBuildThisFileDirectory)BUILT\iOS\Events\" />
   </ItemGroup>
 </Project>

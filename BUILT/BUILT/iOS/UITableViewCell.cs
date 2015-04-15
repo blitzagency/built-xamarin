@@ -15,7 +15,7 @@ namespace BUILT.iOS
         
         }
 
-        abstract public void CellWillDisplay(UITableView tableView, NSIndexPath indexPath);
+        abstract public void PrepeareForDisplay(UITableView tableView, NSIndexPath indexPath);
     }
 }
 #endif

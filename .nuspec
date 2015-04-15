@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>BUILT-Xamarin.Sources</id>
+    <version>0.0.1</version>
+    <title>BUILT For Xamarin</title>
+    <authors>BLITZ, Adam Venturella, Dino Petrone</authors>
+    <owners>Adam Venturella, Dino Petrone</owners>
+    <licenseUrl>https://github.com/blitzagency/built-xamarin</licenseUrl>
+    <projectUrl>https://github.com/blitzagency/built-xamarin</projectUrl>
+    <iconUrl>https://avatars3.githubusercontent.com/u/7890777?s=140</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>BUILT</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright &#x00A9; BLITZ. All rights reserved.</copyright>
+    <tags></tags>
+    <dependencies>
+      <dependency id="reactiveui"/>
+    </dependencies>
+  </metadata>
+  <files>
+      <file src="BUILT\**\*.*" exclude="**\*.log" target="lib/BUILT" />
+  </files>
+</package>

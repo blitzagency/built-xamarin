@@ -4,22 +4,15 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using UIKit;
 using Foundation;
-
+using BUILT.iOS.Events;
 
 namespace BUILT.iOS
 {
-    public class RowSelectionEventArgs<T> : EventArgs    // guideline: derive from EventArgs
-    {
-        public UITableView TableView { get; set; }
-        public NSIndexPath IndexPath { get; set; }
-        public T Model { get; set; }
-    }
-
     public abstract class UITableViewController<T>: UITableViewController
     {
         Type _cellType;
 
-        public event EventHandler<RowSelectionEventArgs<T>> RowSelection;
+        public event EventHandler<RowSelectionEventArgs<T>> Selection;
         public virtual List<T> Models { get; set; }
 
         public bool LoadAsync { get; set; }
@@ -129,12 +122,12 @@ namespace BUILT.iOS
         protected void WillDisplayCell(UITableView tableView, UITableViewCell cell, NSIndexPath indexPath)
         {
             var modelCell = cell as UITableViewCell<T>;
-            modelCell.CellWillDisplay(tableView, indexPath);
+            modelCell.PrepeareForDisplay(tableView, indexPath);
         }
 
         protected virtual void OnRowSelection(UITableView tableView, NSIndexPath indexPath)
         {
-            var eventHandler = RowSelection;
+            var eventHandler = Selection;
 
             if (eventHandler != null)
             {
