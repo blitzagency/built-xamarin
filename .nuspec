@@ -19,6 +19,6 @@
     </dependencies>
   </metadata>
   <files>
-      <file src="BUILT\**\*.*" exclude="**\*.log" target="content/vendor/BUILT" />
+      <file src="BUILT\**\*.*" exclude="**\*.log" target="content/Vendor/BUILT" />
   </files>
 </package>
