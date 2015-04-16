@@ -11,6 +11,8 @@ namespace BUILT.Reactive
         public Action<T> Action{get; set;}
         public bool Once {get; set;}
         public bool SkipInitial {get; set;}
+        public bool Register { get; set; }
         public List<IDisposable> Subscriptions {get; set;} = new List<IDisposable>();
+
     }
 }

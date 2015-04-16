@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using ReactiveUI;
+using Foundation;
 
 
 namespace BUILT.Reactive
@@ -26,6 +27,7 @@ namespace BUILT.Reactive
 
                 foreach (var obj in kvp.Value)
                     delegateEvent.Invoke(this, new object[]{ obj });
+                
             }
 
             _eventsDelegated = true;
@@ -55,17 +57,32 @@ namespace BUILT.Reactive
                 return;
             }
 
-            // ensure we are only adding new subscriptions:
-            foreach (var sub in obj.Subscriptions)
-                sub.Dispose();
-
-            obj.Subscriptions.Clear();
+            clearSubscriptions<T>(obj);
 
             // create a new subscription
             if (obj.Once)
                 createOnceSubscription<T>(obj);
             else
                 createSubscription<T>(obj);
+        }
+
+        public void UndelegateEvent<T>(EventManagerEvent<T> obj)
+        {
+            if (obj.Register == false)
+            {
+                UnregisterEvent<T>(obj);
+                return;
+            }
+
+            clearSubscriptions<T>(obj);
+        }
+
+        protected void clearSubscriptions<T>(EventManagerEvent<T> obj)
+        {
+            foreach(var sub in obj.Subscriptions)
+                sub.Dispose();
+
+            obj.Subscriptions.Clear();
         }
 
         protected void createOnceSubscription<T>(EventManagerEvent<T> obj)
@@ -246,14 +263,6 @@ namespace BUILT.Reactive
             return subscription;
         }
 
-        public void UndelegateEvent<T>(EventManagerEvent<T> obj)
-        {
-            foreach(var sub in obj.Subscriptions)
-                sub.Dispose();
-
-            obj.Subscriptions.Clear();
-        }
-
         public void RegisterEvent<T>(EventManagerEvent<T> evt)
         {
             List<object> list;
@@ -277,16 +286,12 @@ namespace BUILT.Reactive
                 DelegateEvent<T>(evt);
         }
 
-        public void UnregisterEvent<T>(EventManagerEvent<T> evt)
+        public void UnregisterEvent<T>(EventManagerEvent<T> obj)
         {
             List<object> list;
             Type type = typeof(T);
 
-            foreach (var sub in evt.Subscriptions)
-                sub.Dispose();
-
-            evt.Subscriptions.Clear();
-
+            clearSubscriptions<T>(obj);
             registration.TryGetValue(type, out list);
 
             // nothign to unregister
@@ -297,13 +302,13 @@ namespace BUILT.Reactive
             // if we are in the middle of delegating events
             // and we remove an event this might
             // cause an issue.
-            list.Remove(evt);
+            list.Remove(obj);
         }
 
         /// <summary>
         /// skipInitialValue only applies to ReactiveObject targets
         /// </summary>
-        public void ListenTo(object target, string eventName, Action<Unit> action, bool skipInitialValue = true)
+        public void ListenTo(object target, string eventName, Action<Unit> action, bool skipInitialValue=true, bool register=true)
         {
             ListenTo<Unit>(target, eventName, action, skipInitialValue);
         }
@@ -311,13 +316,14 @@ namespace BUILT.Reactive
         /// <summary>
         /// skipInitialValue only applies to ReactiveObject targets
         /// </summary>
-        public void ListenTo<T>(object target, string eventName, Action<T> action, bool skipInitialValue = true)
+        public void ListenTo<T>(object target, string eventName, Action<T> action, bool skipInitialValue=true, bool register=true)
         {
             var evt = new EventManagerEvent<T> {
                 Target = new WeakReference(target),
                 EventName = eventName,
                 Action = action,
                 SkipInitial = skipInitialValue,
+                Register = register,
                 Once = false,
             };
 
@@ -327,7 +333,7 @@ namespace BUILT.Reactive
         /// <summary>
         /// skipInitialValue only applies to ReactiveObject targets
         /// </summary>
-        public void ListenToOnce(object target, string eventName, Action<Unit> action, bool skipInitialValue = true)
+        public void ListenToOnce(object target, string eventName, Action<Unit> action, bool skipInitialValue=true, bool register=true)
         {
             ListenToOnce<Unit>(target, eventName, action, skipInitialValue);
         }
@@ -335,13 +341,14 @@ namespace BUILT.Reactive
         /// <summary>
         /// skipInitialValue only applies to ReactiveObject targets
         /// </summary>
-        public void ListenToOnce<T>(object target, string eventName, Action<T> action, bool skipInitialValue = true)
+        public void ListenToOnce<T>(object target, string eventName, Action<T> action, bool skipInitialValue=true, bool register=true)
         {
             var evt = new EventManagerEvent<T> {
                 Target = new WeakReference(target),
                 EventName = eventName,
                 Action = action,
                 SkipInitial = skipInitialValue,
+                Register = register,
                 Once = true,
             };
 

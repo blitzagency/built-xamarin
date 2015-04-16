@@ -12,7 +12,7 @@ using Foundation;
 namespace BUILT.iOS.Reactive
 {
     [Register("ReactiveViewController")]
-    public class ReactiveViewController: ReactiveUI.ReactiveViewController
+    public class ReactiveViewController: ReactiveUI.ReactiveViewController, IEventManager
     {
         protected EventManager _eventManager = new EventManager();
 
@@ -27,12 +27,6 @@ namespace BUILT.iOS.Reactive
 
         Subject<UIViewController> _didDisappear = new Subject<UIViewController>();
         public IObservable<UIViewController> DidDisappear {get { return _didDisappear;}}
-
-        string _name;
-        public string Name { 
-            get{return _name;}
-            set{ this.RaiseAndSetIfChanged(ref _name, value);} 
-        }
 
         public ReactiveViewController(IntPtr handle): base(handle)
         {
@@ -78,24 +72,24 @@ namespace BUILT.iOS.Reactive
 
         #region IEventManager implementation
 
-        public void ListenTo<T>(object target, string eventName, Action<T> action)
+        public void ListenTo<T>(object target, string eventName, Action<T> action, bool skipInitialValue=true, bool register=true)
         {
-            _eventManager.ListenTo<T>(target, eventName, action);
+            _eventManager.ListenTo<T>(target, eventName, action, skipInitialValue, register);
         }
 
-        public void ListenTo(object target, string eventName, Action<Unit> action)
+        public void ListenTo(object target, string eventName, Action<Unit> action, bool skipInitialValue=true, bool register=true)
         {
-            _eventManager.ListenTo(target, eventName, action);
+            _eventManager.ListenTo(target, eventName, action, skipInitialValue, register);
         }
 
-        public void ListenToOnce<T>(object target, string eventName, Action<T> action)
+        public void ListenToOnce<T>(object target, string eventName, Action<T> action, bool skipInitialValue=true, bool register=true)
         {
-            _eventManager.ListenToOnce<T>(target, eventName, action);
+            _eventManager.ListenToOnce<T>(target, eventName, action, skipInitialValue, register);
         }
 
-        public void ListenToOnce(object target, string eventName, Action<Unit> action)
+        public void ListenToOnce(object target, string eventName, Action<Unit> action, bool skipInitialValue=true, bool register=true)
         {
-            _eventManager.ListenToOnce(target, eventName, action);
+            _eventManager.ListenToOnce(target, eventName, action, skipInitialValue, register);
         }
 
         #endregion

@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\Reactive\ReactiveViewController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\Reactive\ReactiveTableView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\Events\RowSelection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BUILT\iOS\Reactive\ReactiveTableViewCell.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)BUILT\" />

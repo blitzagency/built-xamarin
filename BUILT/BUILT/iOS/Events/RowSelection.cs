@@ -5,11 +5,10 @@ using Foundation;
 
 namespace BUILT.iOS.Events
 {
-    public class RowSelectionEventArgs<T> : EventArgs
+    public class RowSelectionEventArgs : EventArgs
     {
         public UITableView TableView { get; set; }
         public NSIndexPath IndexPath { get; set; }
-        public T Model { get; set; }
     }
 }
 #endif

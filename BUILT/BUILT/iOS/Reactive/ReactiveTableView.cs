@@ -15,12 +15,12 @@ namespace BUILT.iOS.Reactive
 
     public abstract class ReactiveTableView<T>: UITableViewController<T>
     {
-        event EventHandler<RowSelectionEventArgs<T>> _selection;
-        public new IObservable<EventPattern<RowSelectionEventArgs<T>>> Selection { get; private set;}
+        event EventHandler<RowSelectionEventArgs> _selection;
+        public new IObservable<EventPattern<RowSelectionEventArgs>> Selection { get; private set;}
 
         protected ReactiveTableView(IntPtr handle) : base(handle)
         {
-            Selection = Observable.FromEventPattern<RowSelectionEventArgs<T>>(
+            Selection = Observable.FromEventPattern<RowSelectionEventArgs>(
                 x => _selection += x, 
                 x => _selection -= x);
         }
@@ -31,10 +31,9 @@ namespace BUILT.iOS.Reactive
 
             if (eventHandler != null)
             {
-                var args = new RowSelectionEventArgs<T> {
+                var args = new RowSelectionEventArgs {
                     TableView = tableView,
                     IndexPath = indexPath,
-                    Model = Models[indexPath.Row]
                 };
 
                 eventHandler(this, args);

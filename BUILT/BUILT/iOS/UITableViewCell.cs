@@ -6,7 +6,14 @@ using BUILT.Shared;
 
 namespace BUILT.iOS
 {
-    public abstract class UITableViewCell<T>: UITableViewCell, IModel<T>
+    public interface ITableCellFor<T>: IModel<T>
+    {
+        new T Model { get; set; }
+        void ViewWillAppear(UITableView tableView, NSIndexPath indexPath);
+        void ViewDidDisappear(UITableView tableView, NSIndexPath indexPath);
+    }
+
+    public abstract class UITableViewCell<T>: UITableViewCell, ITableCellFor<T>
     {
         public T Model { get; set; }
 
@@ -15,7 +22,14 @@ namespace BUILT.iOS
         
         }
 
-        abstract public void PrepeareForDisplay(UITableView tableView, NSIndexPath indexPath);
+        public virtual void ViewWillAppear(UITableView tableView, NSIndexPath indexPath)
+        {
+            
+        }
+        public virtual void ViewDidDisappear(UITableView tableView, NSIndexPath indexPath)
+        {
+            
+        }
     }
 }
 #endif

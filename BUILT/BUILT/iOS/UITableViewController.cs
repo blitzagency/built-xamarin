@@ -8,11 +8,12 @@ using BUILT.iOS.Events;
 
 namespace BUILT.iOS
 {
+
     public abstract class UITableViewController<T>: UITableViewController
     {
-        Type _cellType;
+        protected Type _cellType;
 
-        public event EventHandler<RowSelectionEventArgs<T>> Selection;
+        public event EventHandler<RowSelectionEventArgs> Selection;
         public virtual List<T> Models { get; set; }
 
         public bool LoadAsync { get; set; }
@@ -36,7 +37,7 @@ namespace BUILT.iOS
 
             set {
                 
-                if (value.IsSubclassOf(typeof(UITableViewCell<T>)))
+                if (value.IsSubclassOf(typeof(UITableViewCell)))
                 {
                     _cellType = value;
                     return;
@@ -62,6 +63,12 @@ namespace BUILT.iOS
             InitializeData();
         }
 
+        public TCell CellAt<TCell>(NSIndexPath indexPath)
+            where TCell: UITableViewCell
+        {
+            return (TCell)TableView.CellAt(indexPath);
+        }
+
         protected virtual void OnLoadSetup()
         {
             if (Models == null)
@@ -69,8 +76,6 @@ namespace BUILT.iOS
 
             ReuseIdentifier = typeof(T).Name + "Cell";
         }
-
-
 
         protected virtual void InitializeData()
         {
@@ -104,25 +109,37 @@ namespace BUILT.iOS
         }
 
         [Export("tableView:cellForRowAtIndexPath:")]
-        protected virtual UITableViewCell numberOfSectionsInTableView(UITableView tableView, NSIndexPath indexPath)
+        protected virtual UITableViewCell cellForRowAtIndexPath(UITableView tableView, NSIndexPath indexPath)
         {
-            var cell = TableView.DequeueReusableCell(ReuseIdentifier) as UITableViewCell<T>;
-            cell.Model = Models[indexPath.Row];
-            return cell;
+            var cell = TableView.DequeueReusableCell(ReuseIdentifier) as ITableCellFor<T>;
+            cell.Model = modelForRowAtIndexPath(tableView, indexPath);
+            return cell as UITableViewCell;
+        }
+
+        protected virtual T modelForRowAtIndexPath(UITableView tableView, NSIndexPath indexPath)
+        {
+            return Models[indexPath.Row];
         }
 
         [Export("tableView:didSelectRowAtIndexPath:")]
-        protected void DidSelectRow(UITableView tableView, NSIndexPath indexPath)
+        protected virtual void didSelectRow(UITableView tableView, NSIndexPath indexPath)
         {
             SelectedIndexPath = indexPath;
             OnRowSelection(tableView, indexPath);
         }
 
         [Export("tableView:willDisplayCell:forRowAtIndexPath:")]
-        protected void WillDisplayCell(UITableView tableView, UITableViewCell cell, NSIndexPath indexPath)
+        protected virtual void cellWillAppear(UITableView tableView, UITableViewCell cell, NSIndexPath indexPath)
         {
-            var modelCell = cell as UITableViewCell<T>;
-            modelCell.PrepeareForDisplay(tableView, indexPath);
+            var modelCell = cell as ITableCellFor<T>;
+            modelCell.ViewWillAppear(tableView, indexPath);
+        }
+
+        [Export("tableView:didEndDisplayingCell:forRowAtIndexPath:")]
+        protected virtual void cellDidDisapper(UITableView tableView, UITableViewCell cell, NSIndexPath indexPath)
+        {
+            var modelCell = cell as ITableCellFor<T>;
+            modelCell.ViewDidDisappear(tableView, indexPath);
         }
 
         protected virtual void OnRowSelection(UITableView tableView, NSIndexPath indexPath)
@@ -131,16 +148,14 @@ namespace BUILT.iOS
 
             if (eventHandler != null)
             {
-                var args = new RowSelectionEventArgs<T> {
+                var args = new RowSelectionEventArgs {
                     TableView = tableView,
                     IndexPath = indexPath,
-                    Model = Models[indexPath.Row]
                 };
 
                 eventHandler(this, args);
             }
         }
-
     }
 }
 #endif
